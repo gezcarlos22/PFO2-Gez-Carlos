@@ -62,7 +62,7 @@ Para poner en marcha el sistema, debes utilizar dos terminales diferentes:
 
 Puedes consultar la documentación conceptual completa (que abarca los motivos para el uso del hashing de claves y las ventajas de SQLite) junto con las capturas de pantalla de las pruebas en:
 
-🌐 **[Documentación en GitHub Pages]()**
+🌐 **[Documentación en GitHub Pages](https://gezcarlos22.github.io/PFO2-Gez-Carlos/)**
 
 *(También puedes visualizarla localmente abriendo el archivo `docs/index.html` en cualquier navegador).*
 
