@@ -1,0 +1,236 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Documentación del proyecto de API REST con Flask, autenticación y SQLite.">
+<title>PFO 2 - Gez Carlos | Documentación del proyecto</title>
+<style>
+:root{
+  --ink:#172033;--muted:#647087;--paper:#f4f6fb;--panel:#fff;
+  --brand:#5146e5;--brand-dark:#3028a6;--mint:#dff8ed;--green:#16734b;
+  --line:#e2e7f0;--soft:#eeedff;--amber:#fff3d8;--shadow:0 16px 40px rgba(24,34,64,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:90px}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:var(--brand-dark);text-decoration:none}
+a:hover{text-decoration:underline}
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{max-width:1160px;margin:auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-weight:850;letter-spacing:-.04em;display:flex;align-items:center;gap:10px}
+.logo-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:var(--brand);color:white;font-weight:900}
+.navlinks{display:flex;gap:18px;flex-wrap:wrap;font-size:.9rem;color:var(--muted)}
+.hero{background:linear-gradient(125deg,#171d39 0%,#302c76 54%,#5146e5 100%);color:#fff;padding:76px 24px 84px;overflow:hidden;position:relative}
+.hero:after{content:"";position:absolute;width:360px;height:360px;border:1px solid rgba(255,255,255,.17);border-radius:50%;right:-60px;top:-130px;box-shadow:0 0 0 38px rgba(255,255,255,.04),0 0 0 78px rgba(255,255,255,.03)}
+.hero-inner{max-width:1160px;margin:auto;position:relative;z-index:1}
+.eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:.76rem;font-weight:800;color:#c8c5ff}
+h1{font-size:clamp(2.4rem,5vw,4.4rem);line-height:1.08;letter-spacing:-.055em;max-width:800px;margin:14px 0}
+.hero p{max-width:730px;color:#e2e5ff;font-size:1.08rem;margin:0}
+.hero-tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.pill{border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.1);padding:6px 12px;border-radius:999px;font-size:.84rem}
+.wrap{max-width:1160px;margin:-32px auto 0;padding:0 24px 56px;position:relative;z-index:2}
+.notice{background:var(--amber);border:1px solid #f0d99c;border-radius:16px;padding:18px 22px;margin-bottom:22px;display:flex;gap:14px;align-items:flex-start}
+.notice-icon{font-size:1.35rem}
+.notice p{margin:0}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:26px}
+.metric{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
+.metric strong{display:block;font-size:1.65rem;letter-spacing:-.04em}
+.metric span{color:var(--muted);font-size:.9rem}
+.layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:24px;align-items:start}
+.sidebar{position:sticky;top:82px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}
+.sidebar h2{font-size:.76rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 10px}
+.sidebar a{display:block;padding:8px 10px;border-radius:9px;color:#39435b;font-size:.92rem}
+.sidebar a:hover{background:var(--soft);text-decoration:none;color:var(--brand-dark)}
+.content{min-width:0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:clamp(22px,4vw,36px);margin-bottom:22px;box-shadow:var(--shadow)}
+.section-kicker{font-size:.76rem;text-transform:uppercase;letter-spacing:.14em;color:var(--brand);font-weight:800;margin-bottom:5px}
+h2{font-size:clamp(1.45rem,3vw,2rem);letter-spacing:-.04em;line-height:1.2;margin:0 0 16px}
+h3{font-size:1.08rem;letter-spacing:-.02em;margin:0 0 7px}
+p{margin:0 0 14px}
+p:last-child{margin-bottom:0}
+.endpoint-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}
+.endpoint{border:1px solid var(--line);background:#fafbff;border-radius:14px;padding:15px}
+.method{display:inline-block;font-size:.72rem;font-weight:850;letter-spacing:.08em;padding:3px 8px;border-radius:6px;background:var(--mint);color:var(--green);margin-bottom:10px}
+.endpoint code,.inline-code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#f0f1f8;padding:3px 6px;border-radius:5px;font-size:.9em}
+.endpoint p{color:var(--muted);font-size:.88rem;margin-top:7px}
+pre{margin:16px 0;background:#171d30;color:#e8ebff;padding:20px;border-radius:14px;overflow:auto;font: .9rem/1.65 ui-monospace,SFMono-Regular,Consolas,monospace}
+.muted{color:var(--muted)}
+.table-wrap{overflow-x:auto;margin:18px 0}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:#f1f2ff;color:#3028a6;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}
+tbody tr:last-child td{border-bottom:0}
+.status{display:inline-flex;align-items:center;gap:7px;color:var(--green);font-weight:750;font-size:.84rem}
+.status:before{content:"";width:7px;height:7px;background:#2db77a;border-radius:50%}
+.tests{display:grid;gap:14px;margin-top:20px}
+.test{border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.test-head{padding:17px 19px;display:flex;gap:14px;align-items:flex-start}
+.num{flex:0 0 34px;height:34px;display:grid;place-items:center;border-radius:10px;background:var(--soft);color:var(--brand-dark);font-weight:850}
+.test-body{padding:0 19px 19px 67px}
+.test-body img{display:block;max-width:100%;height:auto;border:1px solid var(--line);border-radius:10px;margin:14px 0}
+.outcome{background:#effaf4;border-left:3px solid #2db77a;border-radius:0 9px 9px 0;padding:10px 13px;font-size:.91rem;color:#235a43}
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.qa article{border:1px solid var(--line);border-radius:15px;padding:20px;background:#fcfcff}
+.qa article h3{color:var(--brand-dark)}
+footer{background:#171d30;color:#c7cbe0;padding:28px 24px;text-align:center;font-size:.9rem}
+footer a{color:#c8c5ff}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{position:static}.sidebar nav{display:flex;flex-wrap:wrap;gap:3px}.metrics{grid-template-columns:1fr 1fr}.endpoint-grid{grid-template-columns:1fr}.qa{grid-template-columns:1fr}}
+@media(max-width:560px){.nav{align-items:flex-start;flex-direction:column;gap:8px}.navlinks{gap:12px}.hero{padding:55px 20px 70px}.wrap{padding-left:14px;padding-right:14px}.metrics{grid-template-columns:1fr}.notice{padding:15px}.test-body{padding-left:19px}.test-head{padding-bottom:10px}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="nav">
+    <a class="logo" href="#inicio"><span class="logo-mark">PFO</span> PFO2 - Gez Carlos <span class="muted">/ API</span></a>
+    <nav class="navlinks" aria-label="Navegación principal">
+      <a href="#vision">Proyecto</a><a href="#puesta-en-marcha">Instalación</a><a href="#validacion">Pruebas</a><a href="#fundamentos">Conceptos</a>
+    </nav>
+  </div>
+</div>
+
+<header class="hero" id="inicio">
+  <div class="hero-inner">
+    <div class="eyebrow">PFO 2 · Programación sobre redes</div>
+    <h1>Una API para gestionar el acceso a tareas</h1>
+    <p>Documentación técnica del sistema construido con Flask, autenticación de usuarios y persistencia de datos en SQLite.</p>
+    <div class="hero-tags"><span class="pill">Python + Flask</span><span class="pill">API REST</span><span class="pill">SQLite</span><span class="pill">Contraseñas hasheadas</span></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <aside class="notice">
+    <div class="notice-icon">ℹ️</div>
+    <p><strong>Antes de empezar:</strong> GitHub Pages publica contenido estático y no ejecuta el servidor Flask. Esta página funciona como documentación del proyecto. Para utilizar la API, hay que clonar el <a href="https://github.com/AdrianoJere/pfo2-api-flask-sqlite" target="_blank" rel="noopener">repositorio del proyecto</a> y ejecutar la aplicación localmente.</p>
+  </aside>
+
+  <div class="metrics" aria-label="Resumen del proyecto">
+    <div class="metric"><strong>3</strong><span>Endpoints documentados</span></div>
+    <div class="metric"><strong>8</strong><span>Pruebas funcionales documentadas</span></div>
+    <div class="metric"><strong>SQLite</strong><span>Almacenamiento local de usuarios</span></div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>En esta página</h2>
+      <nav>
+        <a href="#vision">01 · Visión general</a>
+        <a href="#puesta-en-marcha">02 · Puesta en marcha</a>
+        <a href="#validacion">03 · Validación y pruebas</a>
+        <a href="#fundamentos">04 · Fundamentos</a>
+      </nav>
+    </aside>
+
+    <div class="content">
+      <section class="panel" id="vision">
+        <div class="section-kicker">01 / Visión general</div>
+        <h2>¿Qué incluye el sistema?</h2>
+        <p>El proyecto implementa un servidor API REST con <strong>Flask</strong>. Permite registrar usuarios mediante contraseñas hasheadas, iniciar sesión y acceder a un endpoint de bienvenida al sistema de tareas. Los datos se almacenan en una base de datos <strong>SQLite</strong>. También incluye un cliente de consola que se comunica con la API.</p>
+        <div class="endpoint-grid">
+          <article class="endpoint"><span class="method">POST</span><br><code>/registro</code><p>Crea un usuario nuevo.</p></article>
+          <article class="endpoint"><span class="method">POST</span><br><code>/login</code><p>Comprueba las credenciales de acceso.</p></article>
+          <article class="endpoint"><span class="method">GET</span><br><code>/tareas</code><p>Devuelve el HTML de bienvenida al sistema.</p></article>
+        </div>
+      </section>
+
+      <section class="panel" id="puesta-en-marcha">
+        <div class="section-kicker">02 / Puesta en marcha</div>
+        <h2>Ejecutar en local</h2>
+        <p>Instala las dependencias y abre dos terminales: una para el servidor y otra para el cliente de consola.</p>
+        <pre><code>pip install -r requirements.txt
+python server.py          # Terminal 1
+python client.py          # Terminal 2</code></pre>
+        <p>El servidor queda escuchando en <code class="inline-code">http://localhost:5000</code>. El cliente presenta un menú con las opciones para registrarse, iniciar sesión, ver tareas y salir.</p>
+        <p class="muted">Nota: el acceso a la ruta de tareas se realiza después de iniciar sesión desde el cliente.</p>
+      </section>
+
+      <section class="panel" id="validacion">
+        <div class="section-kicker">03 / Validación</div>
+        <h2>Resumen de pruebas</h2>
+        <p>Las comprobaciones documentadas cubren el arranque, los casos de error, el flujo correcto de autenticación y el almacenamiento de contraseñas.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Comprobación</th><th>Resultado</th></tr></thead>
+            <tbody>
+              <tr><td>01</td><td>Inicio del servidor y del cliente</td><td><span class="status">Correcto</span></td></tr>
+              <tr><td>02</td><td>Registro de un usuario existente</td><td><span class="status">Error 409 controlado</span></td></tr>
+              <tr><td>03</td><td>Inicio de sesión con contraseña incorrecta</td><td><span class="status">Error 401 controlado</span></td></tr>
+              <tr><td>04</td><td>Registro y acceso con credenciales válidas</td><td><span class="status">Correcto</span></td></tr>
+              <tr><td>05</td><td>Acceso a <code>/tareas</code> tras iniciar sesión</td><td><span class="status">Correcto</span></td></tr>
+              <tr><td>06</td><td>Verificación del hash en la base de datos</td><td><span class="status">Correcto</span></td></tr>
+              <tr><td>07</td><td>Intento de ver tareas sin iniciar sesión</td><td><span class="status">Acceso bloqueado por el cliente</span></td></tr>
+              <tr><td>08</td><td>Cierre ordenado del cliente</td><td><span class="status">Correcto</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>Detalle de las evidencias</h3>
+        <div class="tests">
+          <article class="test">
+            <div class="test-head"><span class="num">01</span><div><h3>Arranque del servidor y del cliente</h3><p class="muted">Se inicia Flask en una terminal y el cliente de consola en otra.</p></div></div>
+            <div class="test-body"><img src="image/1-inicio.png" alt="Servidor y cliente iniciados"><div class="outcome">Se muestran el servidor en <code>localhost:5000</code> y el menú interactivo de opciones del cliente.</div></div>
+          </article>
+          <article class="test">
+            <div class="test-head"><span class="num">02</span><div><h3>Registro duplicado</h3><p class="muted">Se intenta registrar el usuario <code>carlos</code>, ya creado en una prueba anterior.</p></div></div>
+            <div class="test-body"><img src="image/2-registro_duplicado.png" alt="Error de registro porque el usuario ya existe"><div class="outcome">El servidor responde «El usuario ya existe» con HTTP 409 y evita guardar un registro duplicado en la base de datos.</div></div>
+          </article>
+          <article class="test">
+            <div class="test-head"><span class="num">03</span><div><h3>Contraseña incorrecta</h3><p class="muted">Se intenta acceder con el usuario <code>carlos</code> y una contraseña errónea.</p></div></div>
+            <div class="test-body"><img src="image/3-login_incorrecto.png" alt="Inicio de sesión con contraseña incorrecta"><div class="outcome">La API devuelve «Usuario o contraseña incorrectos» (HTTP 401) y no concede acceso al sistema de tareas.</div></div>
+          </article>
+          <article class="test">
+            <div class="test-head"><span class="num">04</span><div><h3>Registro e inicio de sesión correctos</h3><p class="muted">Se registra el nuevo usuario <code>gez</code> y se inicia sesión con sus credenciales.</p></div></div>
+            <div class="test-body"><img src="image/4-registro_login.png" alt="Registro e inicio de sesión exitosos"><div class="outcome">El sistema confirma el registro («Usuario 'gez' registrado correctamente» con HTTP 201) y valida el inicio de sesión («Bienvenido/a gez. Ya podés acceder a /tareas» con HTTP 200).</div></div>
+          </article>
+          <article class="test">
+            <div class="test-head"><span class="num">05</span><div><h3>Acceso al endpoint de tareas</h3><p class="muted">Con la sesión iniciada como <code>gez</code>, se selecciona «Consultar el sistema de tareas» (opción 3) en el cliente.</p></div></div>
+            <div class="test-body"><img src="image/5-tarea.png" alt="Acceso a tareas después del inicio de sesión"><div class="outcome">Se recibe el HTML de bienvenida. En la terminal del servidor aparece el registro de <code>GET /tareas</code> con código de estado HTTP 200.</div></div>
+          </article>
+          <article class="test">
+            <div class="test-head"><span class="num">06</span><div><h3>Hash de contraseñas en SQLite</h3><p class="muted">Se consulta la tabla <code>usuarios</code> de <code>usuarios.db</code> desde la consola.</p></div></div>
+            <div class="test-body"><img src="image/6-contraseñas.png" alt="Consulta de la tabla usuarios con los hashes almacenados"><div class="outcome">Los usuarios <code>carlos</code> y <code>gez</code> tienen hashes <code>scrypt</code> únicos generados en <code>contrasena_hash</code>, asegurando que ninguna contraseña se almacene en texto plano.</div></div>
+          </article>
+          <article class="test">
+            <div class="test-head"><span class="num">07</span><div><h3>Intento de acceso sin iniciar sesión</h3><p class="muted">Se reinicia el cliente y se intenta consultar las tareas sin haber iniciado sesión previamente.</p></div></div>
+            <div class="test-body"><img src="image/7-tareas-sin-login.png" alt="Intento de acceder a tareas sin iniciar sesión"><div class="outcome">El cliente indica «[AVISO] Acceso restringido. Para consultar las tareas, primero debe iniciar sesión.» y bloquea la solicitud sin consultar el endpoint.</div></div>
+          </article>
+          <article class="test">
+            <div class="test-head"><span class="num">08</span><div><h3>Cierre del cliente</h3><p class="muted">Se selecciona la opción «Cerrar el programa» (opción 4).</p></div></div>
+            <div class="test-body"><img src="image/8-cierre.png" alt="Cierre ordenado del cliente"><div class="outcome">El cliente termina de forma ordenada mostrando el mensaje de despedida y devuelve el control a la terminal.</div></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" id="fundamentos">
+        <div class="section-kicker">04 / Fundamentos</div>
+        <h2>Decisiones técnicas</h2>
+        <div class="qa">
+          <article>
+            <h3>¿Qué importancia tiene el hash de las contraseñas?</h3>
+            <p>Guardar las contraseñas directamente en una base de datos puede suponer un riesgo si alguien consigue acceder a ella sin permiso. Para reducir este problema, se utiliza el hash, un proceso que convierte la contraseña en una cadena de caracteres que no permite recuperar directamente el valor original.</p>
+            <p>De esta manera, la base de datos almacena el resultado del hash en lugar de la contraseña escrita por el usuario. Cuando alguien intenta iniciar sesión, el sistema utiliza la función <code class="inline-code">check_password_hash</code> para verificar si la contraseña introducida coincide con la almacenada, sin tener que descifrarla.</p>
+        </article>
+
+        <article>
+            <h3>¿Por qué se eligió SQLite para el proyecto?</h3>
+            <p>SQLite permite gestionar los datos sin necesidad de poner en marcha un servidor de base de datos independiente. Toda la información se guarda en un archivo, en este caso <code class="inline-code">usuarios.db</code>, al que se puede acceder desde Python utilizando la biblioteca <code class="inline-code">sqlite3</code>, que viene incluida con el lenguaje.</p>
+            <p>Esta solución resulta práctica para un proyecto de tamaño reducido, ya que evita configuraciones adicionales y facilita la realización de pruebas durante el desarrollo. Además, proporciona las funcionalidades y el rendimiento necesarios para almacenar y consultar los usuarios de la aplicación.</p>
+        </article>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="section-kicker">Recursos</div>
+        <h2>Repositorio del proyecto</h2>
+        <p>El código fuente y los archivos necesarios para ejecutar la aplicación están disponibles en el repositorio.</p>
+        <p><a href="" target="_blank" rel="noopener">Abrir repositorio en GitHub →</a></p>
+      </section>
+    </div>
+  </div>
+</main>
+<footer>
+  <div>PFO 2 · Gez Carlos · Programación sobre redes · Documentación de la API</div>
+  <div><a href="" target="_blank" rel="noopener">Repositorio en GitHub</a></div>
+</footer>
+</body>
+</html>
